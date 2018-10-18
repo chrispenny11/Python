@@ -7,6 +7,7 @@ import json
 import spotipy
 import spotipy.util as util
 from json.decoder import JSONDecodeError
+import urllib.request as req
 
 
 # Get the username from terminal
@@ -52,7 +53,10 @@ track = sp.current_user_playing_track()
 print(list(track))
 items = track['item']
 string_items = str(items)
-image_url = string_items.find('images')
+image_loc = string_items.find('images')
+image_loc_end = string_items.find('width', image_loc)
+image_url = string_items[image_loc+34:image_loc_end-4]
+req.urlretrieve(image_url, "Temporary Image Directory/temp_artwork.jpg")
 #print(test_item)
 #print(dir(track))
 #image_url = track['is playing']
