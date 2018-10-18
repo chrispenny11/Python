@@ -4,7 +4,14 @@ import spotipy.util as util
 
 scope = 'user-read-currently-playing'
 
-token = util.prompt_for_user_token("Chris Penny",scope,client_id='dd41386aabca41aa8dd7ba2f947782b3',client_secret='53ffd5dd1b6c4771826d8e0f67c63271',redirect_uri='http://locallhost.com/')
+token = util.prompt_for_user_token("Chris Penny", client_id='dd41386aabca41aa8dd7ba2f947782b3',client_secret='4bf7eefcbf7241298d92b9f5ad6fe3f0',redirect_uri='https://developer.spotify.com/dashboard/applications/dd41386aabca41aa8dd7ba2f947782b3')
+
+print(token)
+
+spotifyObject = spotipy.Spotify(auth=token)
+
+
+track = spotifyObject.current_user_playing_track()
 
 ##sp = spotipy.Spotify(auth=token)
 ##
@@ -25,3 +32,10 @@ token = util.prompt_for_user_token("Chris Penny",scope,client_id='dd41386aabca41
 ##
 ##for album in albums:
 ##    print(album['name'])
+##
+##import spotipy
+##sp = spotipy.Spotify()
+##
+##results = sp.search(q='weezer', limit=20)
+##for i, t in enumerate(results['tracks']['items']):
+##    print(' ', i, t['name'])
