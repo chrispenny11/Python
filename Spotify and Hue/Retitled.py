@@ -6,6 +6,7 @@ import spotipy
 import spotipy.util as util
 from json.decoder import JSONDecodeError
 import urllib.request as req
+import numpy as np
 
 def get_artwork_colors():
     # Get the username from terminal
@@ -60,24 +61,61 @@ def get_artwork_colors():
     #print(image_url)
 
     from PIL import Image, ImageFilter
-    try:
-        album_art = Image.open("Temporary Image Directory/temp_artwork.jpg")
-    except:
-        print("Unable to load image")
+#    try:
+    album_art_test = Image.open("Temporary Image Directory/temp_artwork.jpg").convert("L")
+    album_art = Image.open("Temporary Image Directory/temp_artwork.jpg")
+    print(album_art.mode)
+    print(album_art)
+    r, g, b = album_art.split()
+    print(album_art.split())
+#    album_art_single = album_art.merge("RGB", (b, g, r))#
+#    print([r, g, b])
+        
+#    except:
+#        print("Unable to load image")
 
     histogram = album_art.histogram()
+    rgb_data = album_art.load()
+    print(rgb_data)
+
+#Test
+    width, height = album_art.size
+
+    all_pixels = []
+    for i in range(width):
+        for j in range(height):
+            rgb_pixel = rgb_data[i, j]
+            all_pixels.append(rgb_pixel)
+    print(all_pixels)
+    
+    histogram_test = album_art_test.histogram()
+    print(histogram_test)
     r_hist = histogram[1:256]
-    r_hist = r_hist.index(max(r_hist))
+    r_hist_max = r_hist.index(max(r_hist))
+#    r_hist_max = r_hist.index(max(r_hist[r_hist < round(.85*r_hist_max)]))
+#    r_hist_select = [num for num in r_hist if r_hist >  and num % 7 == 0]
     g_hist = histogram[257:512]
-    g_hist = g_hist.index(max(g_hist))
+    g_hist_max = g_hist.index(max(g_hist))
     b_hist = histogram[513:768]
-    b_hist = b_hist.index(max(b_hist))
+    b_hist_max = b_hist.index(max(b_hist))
+    rgb_max = [r_hist_max, g_hist_max, b_hist_max]
+    print(rgb_max)
+
+    import matplotlib
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    fig, test = plt.subplots()
+    ax.plot(r_hist, 'r')
+    ax.plot(g_hist, 'g')
+    ax.plot(b_hist, 'b')
+    ax.plot(histogram_test, 'black')
+    plt.show()
 
     import numpy as np
     import colour
 
     # Assuming sRGB encoded colour values.
-    RGB = np.array([r_hist, g_hist, b_hist])
+    RGB = np.array([r_hist_max, g_hist_max, b_hist_max])
 
     # Conversion to tristimulus values.
     XYZ = colour.sRGB_to_XYZ(RGB / 256)
