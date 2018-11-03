@@ -5,8 +5,14 @@ import json
 import spotipy
 import spotipy.util as util
 from json.decoder import JSONDecodeError as JSONDE
-import urllib.request as req
+import urllib.request as req # For saving album art image from URL
 import numpy as np
+import PIL
+from PIL import Image, ImageFilter # Allows python to interact with saved album art jpeg.
+import colour # For conversion of RGB color scale to CIE xy chromaticity (see: https://en.wikipedia.org/wiki/CIE_1931_color_space)
+import matplotlib # For plotting RGB values
+from matplotlib import pyplot as pypl
+
 
 # Define function for obtaining colors to pass to Philips Hue API Wrapper (phue package)
 def get_artwork_colors():
@@ -42,36 +48,31 @@ def get_artwork_colors():
     req.urlretrieve(image_url, "Temporary Image Directory/temp_artwork.jpg")
     #print(image_url) # For Debug
 
-    from PIL import Image, ImageFilter
-#    try:
+
     album_art_test = Image.open("Temporary Image Directory/temp_artwork.jpg").convert("L")
     album_art = Image.open("Temporary Image Directory/temp_artwork.jpg")
     print(album_art.mode)
-    print(album_art)
+#    print(album_art)
     r, g, b = album_art.split()
-    print(album_art.split())
+#    print(album_art.split())
 #    album_art_single = album_art.merge("RGB", (b, g, r))#
 #    print([r, g, b])
-        
-#    except:
-#        print("Unable to load image")
 
     histogram = album_art.histogram()
-    rgb_data = album_art.load()
-    print(rgb_data)
+#    rgb_data = album_art.load()
+#    print(rgb_data)
 
-#Test
-    width, height = album_art.size
-
-    all_pixels = []
-    for i in range(width):
-        for j in range(height):
-            rgb_pixel = rgb_data[i, j]
-            all_pixels.append(rgb_pixel)
-    print(all_pixels)
-    
+    # Convert image to a list of RGB tuples.
+    rgb_tuples = np.asarray(album_art)
+    print(rgb_tuples)
+    print(type(rgb_tuples.shape))
+#    test_val = max(set(a), key=a.count)
+#    print(test_val)
+#    unique, counts = np.unique(a, return_counts = TRUE)
+#    print(np.asarray((unique, counts)).T)
+        
     histogram_test = album_art_test.histogram()
-    print(histogram_test)
+    #print(histogram_test)
     r_hist = histogram[1:256]
     r_hist_max = r_hist.index(max(r_hist))
 #    r_hist_max = r_hist.index(max(r_hist[r_hist < round(.85*r_hist_max)]))
@@ -83,18 +84,12 @@ def get_artwork_colors():
     rgb_max = [r_hist_max, g_hist_max, b_hist_max]
     print(rgb_max)
 
-    import matplotlib
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    fig, test = plt.subplots()
-    ax.plot(r_hist, 'r')
-    ax.plot(g_hist, 'g')
-    ax.plot(b_hist, 'b')
-    ax.plot(histogram_test, 'black')
-    plt.show()
-
-    import numpy as np
-    import colour
+    fig, histo = pypl.subplots()
+    histo.plot(r_hist, 'r')
+    histo.plot(g_hist, 'g')
+    histo.plot(b_hist, 'b')
+    histo.plot(histogram_test, 'black')
+    pypl.show()
 
     # Assuming sRGB encoded colour values.
     RGB = np.array([r_hist_max, g_hist_max, b_hist_max])
@@ -106,9 +101,5 @@ def get_artwork_colors():
     xy = colour.XYZ_to_xy(XYZ)
     print(xy)
     return(xy)
-
-    # Conversion to correlated colour temperature in K.
-    ##CCT = colour.temperature.xy_to_CCT_Hernandez1999(xy)
-    ##print(CCT)
 
 get_artwork_colors()
