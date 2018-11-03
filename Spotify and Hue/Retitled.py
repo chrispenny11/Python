@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import pandas as pd
 import spotipy
 import spotipy.util as util
 from json.decoder import JSONDecodeError as JSONDE
@@ -53,9 +54,9 @@ def get_artwork_colors():
     album_art = Image.open("Temporary Image Directory/temp_artwork.jpg")
     print(album_art.mode)
 #    print(album_art)
-    r, g, b = album_art.split()
+#    r, g, b = album_art.split()
 #    print(album_art.split())
-#    album_art_single = album_art.merge("RGB", (b, g, r))#
+#    album_art_single = album_art.merge("RGB", (b, g, r))
 #    print([r, g, b])
 
     histogram = album_art.histogram()
@@ -66,6 +67,13 @@ def get_artwork_colors():
     rgb_tuples = np.asarray(album_art)
     print(rgb_tuples)
     print(type(rgb_tuples.shape))
+    pd_rgb = pd.DataFrame.from_records(rgb_tuples)
+    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
+    print(pd_rgb[3,12])
+#    counts = pd_rgb.count()
+#    print(counts)
+#    pd_rgb[:,4] = 4
+
 #    test_val = max(set(a), key=a.count)
 #    print(test_val)
 #    unique, counts = np.unique(a, return_counts = TRUE)
@@ -84,6 +92,7 @@ def get_artwork_colors():
     rgb_max = [r_hist_max, g_hist_max, b_hist_max]
     print(rgb_max)
 
+    # Generate Histogram Plot with RGB channels
     fig, histo = pypl.subplots()
     histo.plot(r_hist, 'r')
     histo.plot(g_hist, 'g')
