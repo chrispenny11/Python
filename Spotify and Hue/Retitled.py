@@ -68,8 +68,20 @@ def get_artwork_colors():
     print(rgb_tuples)
     print(type(rgb_tuples.shape))
     pd_rgb = pd.DataFrame.from_records(rgb_tuples)
-    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
-    print(pd_rgb[3,12])
+
+    for i in xrange(0, 639):
+#        if i == 0:
+#            stack = pd_rgb[[pd_rgb.columns[0]]
+#        elif i > 0:
+#            stack.append(pd_rgb[[pd_rgb.columns[i]])
+
+    print(stack)
+    
+#    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
+
+#    pd_rgb = pd_rgb.astype(str)
+
+#    pd_rgb.count()
 #    counts = pd_rgb.count()
 #    print(counts)
 #    pd_rgb[:,4] = 4
@@ -83,8 +95,6 @@ def get_artwork_colors():
     #print(histogram_test)
     r_hist = histogram[1:256]
     r_hist_max = r_hist.index(max(r_hist))
-#    r_hist_max = r_hist.index(max(r_hist[r_hist < round(.85*r_hist_max)]))
-#    r_hist_select = [num for num in r_hist if r_hist >  and num % 7 == 0]
     g_hist = histogram[257:512]
     g_hist_max = g_hist.index(max(g_hist))
     b_hist = histogram[513:768]
