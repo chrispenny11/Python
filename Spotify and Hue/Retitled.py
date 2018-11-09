@@ -69,13 +69,20 @@ def get_artwork_colors():
     print(type(rgb_tuples.shape))
     pd_rgb = pd.DataFrame.from_records(rgb_tuples)
 
-    for i in xrange(0, 639):
-#        if i == 0:
-#            stack = pd_rgb[[pd_rgb.columns[0]]
-#        elif i > 0:
-#            stack.append(pd_rgb[[pd_rgb.columns[i]])
+    for i in range(0, 639):
+#        print(i)
+
+        if i==0:
+            stack = pd_rgb[pd_rgb.columns[i]]
+            print("test")
+        if i > 0:
+#            stack = stack + pd_rgb[pd_rgb.columns[i]]
+#            stack.append(pd_rgb[pd_rgb.columns[i]])
+             stack = np.vstack(stack, pd_rgb[pd_rgb.columns[i]])
+#            print("second test")
 
     print(stack)
+    print(length(stack))
     
 #    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
 
