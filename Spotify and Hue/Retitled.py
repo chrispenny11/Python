@@ -67,21 +67,41 @@ def get_artwork_colors():
     rgb_tuples = np.asarray(album_art)
     print(rgb_tuples)
     print(type(rgb_tuples.shape))
-    pd_rgb = pd.DataFrame.from_records(rgb_tuples)
+    print('mark')
+    print(rgb_tuples[639])
 
+# Stack with Numpy
     for i in range(0, 63):
-#        print(i)
-
         if i==0:
-            stack = pd_rgb[pd_rgb.columns[i]]
-            print("test")
+            np_stack = rgb_tuples[i]
         if i > 0:
-#            stack = stack + pd_rgb[pd_rgb.columns[i]]
-#            stack.append(pd_rgb[pd_rgb.columns[i]])
-             stack = np.vstack((stack, pd_rgb[pd_rgb.columns[i]]))
-#            print("second test")
-    print(type(stack))
-    print(stack[[50]])
+            np_stack = np.vstack((np_stack, rgb_tuples[i]))
+
+    print(np.shape(np_stack))
+
+    pd_rgb_stack = pd.DataFrame(np_stack, columns = ['r', 'g', 'b'])
+    #print(pd_rgb_stack['r'])
+    pd_red = pd_rgb_stack['r']
+    print(pd_rgb_stack['r'].value_counts())
+
+
+# Stack with Pandas
+##    pd_rgb = pd.DataFrame.from_records(rgb_tuples)
+##
+##    for i in range(0, 63):
+###        print(i)
+##
+##        if i==0:
+##            stack = pd_rgb[pd_rgb.columns[i]]
+###            print("test")
+##        if i > 0:
+###            stack = stack + pd_rgb[pd_rgb.columns[i]]
+###            stack.append(pd_rgb[pd_rgb.columns[i]])
+##             stack = np.vstack((stack, pd_rgb[pd_rgb.columns[i]]))
+###            print("second test")
+###    print(type(stack))
+###    print(stack[[50]])
+
 #    print(np.shape(stack))
     
 #    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
