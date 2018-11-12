@@ -71,7 +71,7 @@ def get_artwork_colors():
     print(rgb_tuples[639])
 
 # Stack with Numpy
-    for i in range(0, 63):
+    for i in range(0, 639):
         if i==0:
             np_stack = rgb_tuples[i]
         if i > 0:
@@ -81,8 +81,13 @@ def get_artwork_colors():
 
     pd_rgb_stack = pd.DataFrame(np_stack, columns = ['r', 'g', 'b'])
     #print(pd_rgb_stack['r'])
-    pd_red = pd_rgb_stack['r']
-    print(pd_rgb_stack['r'].value_counts())
+    pd_rgb_stack['rgb'] = (pd_rgb_stack['r'].astype(str)) + '_' + (pd_rgb_stack['g'].astype(str)) + '_' + (pd_rgb_stack['b'].astype(str))
+#    pd_rgb_stack['check_sum'] = pd_rgb_stack['r'] + pd_rgb_stack['b'] + pd_rgb_stack['g']
+    pd_rgb_stack['check_sum'] = pd_rgb_stack[['r', 'b', 'g']].sum(axis=1)
+#    pd_rgb_stack.assign(rgb = lambda x: str(x['r']) + '_' + str(x['g']) + '_' + str(x['b']))
+    print(pd_rgb_stack['rgb'].value_counts())
+    print(pd_rgb_stack['rgb'].head())
+    print(pd_rgb_stack['check_sum'].head(20))
 
 
 # Stack with Pandas
