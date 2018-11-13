@@ -65,10 +65,9 @@ def get_artwork_colors():
 
     # Convert image to a list of RGB tuples.
     rgb_tuples = np.asarray(album_art)
-    print(rgb_tuples)
-    print(type(rgb_tuples.shape))
-    print('mark')
-    print(rgb_tuples[639])
+#    print(rgb_tuples)
+#    print(type(rgb_tuples.shape))
+#    print(rgb_tuples[639])
 
 # Stack with Numpy
     for i in range(0, 639):
@@ -88,7 +87,11 @@ def get_artwork_colors():
     print(pd_rgb_stack['rgb'].value_counts())
     print(pd_rgb_stack['rgb'].head())
     print(pd_rgb_stack['check_sum'].head(20))
+    check_sum_mean = pd_rgb_stack['check_sum'].mean()
+    print(check_sum_mean)
 
+    #Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
+    
 
 # Stack with Pandas
 ##    pd_rgb = pd.DataFrame.from_records(rgb_tuples)
