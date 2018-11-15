@@ -99,41 +99,26 @@ def get_artwork_colors():
 #    print(r_select)
     
     #Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
-    
 
-# Stack with Pandas
-##    pd_rgb = pd.DataFrame.from_records(rgb_tuples)
-##
-##    for i in range(0, 63):
-###        print(i)
-##
-##        if i==0:
-##            stack = pd_rgb[pd_rgb.columns[i]]
-###            print("test")
-##        if i > 0:
-###            stack = stack + pd_rgb[pd_rgb.columns[i]]
-###            stack.append(pd_rgb[pd_rgb.columns[i]])
-##             stack = np.vstack((stack, pd_rgb[pd_rgb.columns[i]]))
-###            print("second test")
-###    print(type(stack))
-###    print(stack[[50]])
+    rgb_temp_std = 0
+    rgb_temp_sum = 0
+    i = -1
 
-#    print(np.shape(stack))
-    
-#    pd_rgb.to_csv('Temporary Image Directory/temp_artwork.csv', index=False, header=False)
+    #and (rgb_temp_sum < 50)
 
-#    pd_rgb = pd_rgb.astype(str)
+    while (rgb_temp_std < 10):
+        i = i + 1
+        temp = pd_rgb_sorted.index[i]
+        parse_1 = temp.find('_')
+        parse_2 = temp.find('_', parse_1+1)
+        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'b':[temp[parse_1+1: parse_2]], 'g':[temp[parse_2+1:]]}).astype(int)
+        rgb_temp_std = np.std(rgb_temp, 1)[0]
+        rgb_temp_sum = rgb_temp['r'] + rgb_temp['b'] + rgb_temp['g']
 
-#    pd_rgb.count()
-#    counts = pd_rgb.count()
-#    print(counts)
-#    pd_rgb[:,4] = 4
+    print(rgb_temp)
 
-#    test_val = max(set(a), key=a.count)
-#    print(test_val)
-#    unique, counts = np.unique(a, return_counts = TRUE)
-#    print(np.asarray((unique, counts)).T)
-        
+# Generate Histograms and Plot
+            
     histogram_test = album_art_test.histogram()
     #print(histogram_test)
     r_hist = histogram[1:256]
