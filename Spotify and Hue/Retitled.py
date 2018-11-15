@@ -84,12 +84,20 @@ def get_artwork_colors():
 #    pd_rgb_stack['check_sum'] = pd_rgb_stack['r'] + pd_rgb_stack['b'] + pd_rgb_stack['g']
     pd_rgb_stack['check_sum'] = pd_rgb_stack[['r', 'b', 'g']].sum(axis=1)
 #    pd_rgb_stack.assign(rgb = lambda x: str(x['r']) + '_' + str(x['g']) + '_' + str(x['b']))
-    print(pd_rgb_stack['rgb'].value_counts())
+#    print(pd_rgb_stack['rgb'].value_counts())
+    pd_rgb_sorted = pd_rgb_stack['rgb'].value_counts().to_frame()
+    pd_rgb_sorted.astype(int)
+    print(pd_rgb_sorted.iloc[0])
+    print(pd_rgb_sorted)
     print(pd_rgb_stack['rgb'].head())
     print(pd_rgb_stack['check_sum'].head(20))
     check_sum_mean = pd_rgb_stack['check_sum'].mean()
     print(check_sum_mean)
-
+#    r_select = pd_rgb_sorted['r'].values[0]
+#    r_select = pd_rgb_sorted.loc[1, 'r']
+    print(pd_rgb_stack['r'])
+#    print(r_select)
+    
     #Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
     
 
