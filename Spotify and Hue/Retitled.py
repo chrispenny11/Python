@@ -100,22 +100,32 @@ def get_artwork_colors():
     
     #Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
 
+# Initialize Values for While Loop
     rgb_temp_std = 0
     rgb_temp_sum = 0
     i = -1
 
     #and (rgb_temp_sum < 50)
-
+# Implement While Loop to Ensure Color is not black/white/greyscale (in which all rgb values are approximately the same)
     while (rgb_temp_std < 10):
         i = i + 1
         temp = pd_rgb_sorted.index[i]
         parse_1 = temp.find('_')
         parse_2 = temp.find('_', parse_1+1)
-        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'b':[temp[parse_1+1: parse_2]], 'g':[temp[parse_2+1:]]}).astype(int)
+        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
         rgb_temp_std = np.std(rgb_temp, 1)[0]
-        rgb_temp_sum = rgb_temp['r'] + rgb_temp['b'] + rgb_temp['g']
+        rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
 
     print(rgb_temp)
+
+    pd_rgb_stack['r_select'] = rgb_temp['r'][0]
+    pd_rgb_stack['g_select'] = rgb_temp['g'][0]
+    pd_rgb_stack['b_select'] = rgb_temp['b'][0]
+
+#    pd_rgb_stack['dist_score'] = pd_rgb_stack['r'] - r_select
+    pd_rgb_stack['dist_score'] = (pd_rgb_stack['r'] - pd_rgb_stack['r_select'])
+    print(pd_rgb_stack['r_select'])
+    print(pd_rgb_stack['dist_score'].head(20))
 
 # Generate Histograms and Plot
             
