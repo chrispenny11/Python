@@ -116,11 +116,12 @@ def get_artwork_colors():
         rgb_temp_std = np.std(rgb_temp, 1)[0]
         rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
 
+    rgb_select = rgb_temp
     print(rgb_temp)
 
-    pd_rgb_stack['r_select'] = rgb_temp['r'][0]
-    pd_rgb_stack['g_select'] = rgb_temp['g'][0]
-    pd_rgb_stack['b_select'] = rgb_temp['b'][0]
+    pd_rgb_stack['r_select'] = rgb_select['r'][0]
+    pd_rgb_stack['g_select'] = rgb_select['g'][0]
+    pd_rgb_stack['b_select'] = rgb_select['b'][0]
 
 #    pd_rgb_stack['dist_score'] = pd_rgb_stack['r'] - r_select
     pd_rgb_stack['dist_score'] = np.sqrt(np.square(pd_rgb_stack['r'] - pd_rgb_stack['r_select']) + np.square(pd_rgb_stack['g'] - pd_rgb_stack['g_select']) + np.square(pd_rgb_stack['b'] - pd_rgb_stack['b_select']))
@@ -128,6 +129,25 @@ def get_artwork_colors():
     dist_score_sorted = pd_rgb_stack['dist_score'].value_counts().to_frame()
     dist_score_std = np.std(pd_rgb_stack['dist_score'])
     print(dist_score_std)
+
+# Recreate Sorted List On DF including distance score -- Merge/Join?
+    pd_rgb_sorted = pd_rgb_stack['rgb'].value_counts().to_frame()
+    pd_rgb_sorted.astype(int)
+
+# Reset Initial Values for Second While Loop
+    rgb_temp_std = 0
+    rgb_temp_sum = 0
+    j = -1
+
+# Second While Loop    
+    while (rgb_temp_std < 10):
+        j = j + 1
+        temp = pd_rgb_sorted.index[j]
+        parse_1 = temp.find('_')
+        parse_2 = temp.find('_', parse_1+1)
+        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
+        rgb_temp_std = np.std(rgb_temp, 1)[0]
+        rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
 
 # Generate Histograms and Plot
             
