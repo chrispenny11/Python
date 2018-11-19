@@ -11,7 +11,7 @@ import numpy as np
 import PIL
 from PIL import Image, ImageFilter # Allows python to interact with saved album art jpeg.
 import colour # For conversion of RGB color scale to CIE xy chromaticity (see: https://en.wikipedia.org/wiki/CIE_1931_color_space)
-import matplotlib # For plotting RGB values
+import matplotlib # For plotting RGB histograms
 from matplotlib import pyplot as pypl
 
 
@@ -123,9 +123,11 @@ def get_artwork_colors():
     pd_rgb_stack['b_select'] = rgb_temp['b'][0]
 
 #    pd_rgb_stack['dist_score'] = pd_rgb_stack['r'] - r_select
-    pd_rgb_stack['dist_score'] = (pd_rgb_stack['r'] - pd_rgb_stack['r_select'])
-    print(pd_rgb_stack['r_select'])
+    pd_rgb_stack['dist_score'] = np.sqrt(np.square(pd_rgb_stack['r'] - pd_rgb_stack['r_select']) + np.square(pd_rgb_stack['g'] - pd_rgb_stack['g_select']) + np.square(pd_rgb_stack['b'] - pd_rgb_stack['b_select']))
     print(pd_rgb_stack['dist_score'].head(20))
+    dist_score_sorted = pd_rgb_stack['dist_score'].value_counts().to_frame()
+    dist_score_std = np.std(pd_rgb_stack['dist_score'])
+    print(dist_score_std)
 
 # Generate Histograms and Plot
             
