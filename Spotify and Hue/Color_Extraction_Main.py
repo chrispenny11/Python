@@ -18,56 +18,49 @@ from matplotlib import pyplot as pypl
 # Define function for obtaining colors to pass to Philips Hue API Wrapper (phue package)
 def get_artwork_colors():
     
-    # Define scope
+# Define scope
     scope = 'current_user_playing_track user-read-private user-read-playback-state user-modify-playback-state'
 
-    # Obtain Spotify Token (username, client_id, and client_secret will vary per user - for additional information see Spotify API documentation.)
+# Obtain Spotify Token (username, client_id, and client_secret will vary per user - for additional information see Spotify API documentation.)
     try:
         token = util.prompt_for_user_token("Chris Penny", client_id='dd41386aabca41aa8dd7ba2f947782b3',client_secret='4bf7eefcbf7241298d92b9f5ad6fe3f0',redirect_uri='http://google.com/')
-    # Error Case - Remove token cache and replace
+# Error Case - Remove token cache and replace
     except (AttributeError, JSONDE):
         os.remove(f".cache-{username}")
         token = util.prompt_for_user_token("Chris Penny", client_id='dd41386aabca41aa8dd7ba2f947782b3',client_secret='4bf7eefcbf7241298d92b9f5ad6fe3f0',redirect_uri='http://google.com/')
 
-    # Generate spotipy object using Spotify Token
+# Generate spotipy object using Spotify Token
     spot_obj = spotipy.Spotify(auth=token)
 
-    # Call spotipy attribute for the currently playing track
+# Call spotipy attribute for the currently playing track
     track = spot_obj.current_user_playing_track()
     #print(list(track)) # For Debug
 
-    # NOTE: While the current_user_playing_track() attribute results in a dictionary, the album art image URL is not assigned to a key and must be extracted by parsing.
+# NOTE: While the current_user_playing_track() attribute results in a dictionary, the album art image URL is not assigned to a key and must be extracted by parsing.
     items = track['item']
     
-    # Convert dictionary object to string and parse the album art image URL.
+# Convert dictionary object to string and parse the album art image URL.
     string_items = str(items)
     image_loc = string_items.find('images')
     image_loc_end = string_items.find('width', image_loc)
     image_url = string_items[image_loc+34:image_loc_end-4]
 
-    # Use the urllib library to save the image as a temporary file in a sub-directory.
+# Use the urllib library to save the image as a temporary file in a sub-directory.
     req.urlretrieve(image_url, "Temporary Image Directory/temp_artwork.jpg")
     #print(image_url) # For Debug
-
 
     album_art_test = Image.open("Temporary Image Directory/temp_artwork.jpg").convert("L")
     album_art = Image.open("Temporary Image Directory/temp_artwork.jpg")
     print(album_art.mode)
-#    print(album_art)
-#    r, g, b = album_art.split()
-#    print(album_art.split())
-#    album_art_single = album_art.merge("RGB", (b, g, r))
-#    print([r, g, b])
 
     histogram = album_art.histogram()
-#    rgb_data = album_art.load()
 #    print(rgb_data)
 
-    # Convert image to a list of RGB tuples.
+# Convert image to a numpy array.
     rgb_tuples = np.asarray(album_art)
 #    print(rgb_tuples)
 #    print(type(rgb_tuples.shape))
-#    print(rgb_tuples[639])
+
 
 # Stack with Numpy
     for i in range(0, 639):
@@ -79,12 +72,9 @@ def get_artwork_colors():
     print(np.shape(np_stack))
 
     pd_rgb_stack = pd.DataFrame(np_stack, columns = ['r', 'g', 'b'])
-    #print(pd_rgb_stack['r'])
+#    print(pd_rgb_stack['r'])
     pd_rgb_stack['rgb'] = (pd_rgb_stack['r'].astype(str)) + '_' + (pd_rgb_stack['g'].astype(str)) + '_' + (pd_rgb_stack['b'].astype(str))
-#    pd_rgb_stack['check_sum'] = pd_rgb_stack['r'] + pd_rgb_stack['b'] + pd_rgb_stack['g']
     pd_rgb_stack['check_sum'] = pd_rgb_stack[['r', 'b', 'g']].sum(axis=1)
-#    pd_rgb_stack.assign(rgb = lambda x: str(x['r']) + '_' + str(x['g']) + '_' + str(x['b']))
-#    print(pd_rgb_stack['rgb'].value_counts())
     pd_rgb_sorted = pd_rgb_stack['rgb'].value_counts().to_frame()
     pd_rgb_sorted.astype(int)
     print(pd_rgb_sorted.iloc[0])
@@ -97,8 +87,8 @@ def get_artwork_colors():
 #    r_select = pd_rgb_sorted.loc[1, 'r']
     print(pd_rgb_stack['r'])
 #    print(r_select)
-    
-    #Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
+
+#Guiding Idea: Take the highest frequency rgb combination that is a sufficient distance from the max value.
 
 # Initialize Values for While Loop
     rgb_temp_std = 0
@@ -138,6 +128,10 @@ def get_artwork_colors():
     rgb_temp_std = 0
     rgb_temp_sum = 0
     j = -1
+
+# Perform left join on pd_rgb_stack to get distance scores in same dataframe
+    pd_rgb_sorted['rgb_val'] = pd_rgb_sorted.index
+    pd_rgb_merged = pd_rgb_sorted.join(pd_rgb_stack['rgb'], on = 
 
 # Second While Loop    
     while (rgb_temp_std < 10):
