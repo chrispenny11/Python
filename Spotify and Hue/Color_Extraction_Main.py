@@ -75,6 +75,8 @@ def get_artwork_colors():
 #    print(pd_rgb_stack['r'])
     pd_rgb_stack['rgb'] = (pd_rgb_stack['r'].astype(str)) + '_' + (pd_rgb_stack['g'].astype(str)) + '_' + (pd_rgb_stack['b'].astype(str))
     pd_rgb_stack['check_sum'] = pd_rgb_stack[['r', 'b', 'g']].sum(axis=1)
+
+#   Sort by Value Counts to find modal values and return in order of frequency
     pd_rgb_sorted = pd_rgb_stack['rgb'].value_counts().to_frame()
     pd_rgb_sorted.astype(int)
     print(pd_rgb_sorted.iloc[0])
@@ -130,18 +132,17 @@ def get_artwork_colors():
     j = -1
 
 # Perform left join on pd_rgb_stack to get distance scores in same dataframe
-    pd_rgb_sorted['rgb_val'] = pd_rgb_sorted.index
-    pd_rgb_merged = pd_rgb_sorted.join(pd_rgb_stack['rgb'], on = 
+    pd_rgb_merged = pd_rgb_stack.join(pd_rgb_sorted, on = 'rgb', how = 'left', rsuffix = '_count')
 
 # Second While Loop    
-    while (rgb_temp_std < 10):
-        j = j + 1
-        temp = pd_rgb_sorted.index[j]
-        parse_1 = temp.find('_')
-        parse_2 = temp.find('_', parse_1+1)
-        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
-        rgb_temp_std = np.std(rgb_temp, 1)[0]
-        rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
+##    while (rgb_temp_std < 10):
+##        j = j + 1
+##        temp = pd_rgb_sorted.index[j]
+##        parse_1 = temp.find('_')
+##        parse_2 = temp.find('_', parse_1+1)
+##        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
+##        rgb_temp_std = np.std(rgb_temp, 1)[0]
+##        rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
 
 # Generate Histograms and Plot
             
