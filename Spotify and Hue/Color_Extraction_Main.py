@@ -61,9 +61,8 @@ def get_artwork_colors():
 #    print(rgb_tuples) # For Debug
 #    print(type(rgb_tuples.shape)) # For Debug
 
-
 # Stack with Numpy
-    for i in range(0, 639):
+    for i in range(0, len(rgb_tuples)):
         if i==0:
             np_stack = rgb_tuples[i]
         if i > 0:
@@ -94,7 +93,7 @@ def get_artwork_colors():
 
     #and (rgb_temp_sum < 50)
 # Implement While Loop to ensure selected color is not black/white/greyscale (in which all rgb values are approximately the same)
-    while (rgb_temp_std < 10):
+    while (rgb_temp_std < 15):
         i += 1
         temp = pd_rgb_sorted.index[i]
         parse_1 = temp.find('_')
@@ -102,6 +101,7 @@ def get_artwork_colors():
         rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
         rgb_temp_std = np.std(rgb_temp, 1)[0]
         rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
+        rgb_temp_sum = rgb_temp_sum.astype(int)
 
     rgb_select_1 = rgb_temp
     print('The first selected color is:')
@@ -114,12 +114,12 @@ def get_artwork_colors():
 
 # Perform distance calculation (<-- distance formula applied to RGB values)
     pd_rgb_stack['dist_score'] = np.sqrt(np.square(pd_rgb_stack['r'] - pd_rgb_stack['r_select']) + np.square(pd_rgb_stack['g'] - pd_rgb_stack['g_select']) + np.square(pd_rgb_stack['b'] - pd_rgb_stack['b_select']))
-    print(pd_rgb_stack['dist_score'].head(20))
+#    print(pd_rgb_stack['dist_score'].head(20))
 # Inspect Counts
     dist_score_sorted = pd_rgb_stack['dist_score'].value_counts().to_frame()
 # Calculate Standard Deviation of Distance Score
     dist_score_std = np.std(pd_rgb_stack['dist_score'])
-    print(dist_score_std)
+#    print(dist_score_std)
 
 # Recreate Sorted List on DF
 ##    pd_rgb_sorted = pd_rgb_stack['rgb'].value_counts().to_frame()
@@ -128,27 +128,29 @@ def get_artwork_colors():
 # Perform left join on pd_rgb_stack to get distance scores in same dataframe
     pd_rgb_merged = pd_rgb_stack.join(pd_rgb_sorted, on = 'rgb', how = 'left', rsuffix = '_count')
 
-# Sort Merged DF
+# Sort Merged DF and remove duplicates
     pd_rgb_merged = pd_rgb_merged.sort_values(by = ['rgb_count', 'dist_score'], ascending = False)
-
+    pd_rgb_merged['std'] = np.std(pd_rgb_merged[['r','g','b']], axis = 1)
+    pd_rgb_merged = pd_rgb_merged.drop_duplicates()
+    
 # Reset Initial Values for Second While Loop
     rgb_temp_std = 0
     rgb_temp_sum = 0
     temp_dist_score = 0
     j = -1
 
-# Second While Loop    
-    while (rgb_temp_std < 10 or temp_dist_score < dist_score_std):
+# Second While Loop
+    while (rgb_temp_std < 15 or temp_dist_score < 2*dist_score_std or temp_sum < 120):
         j += 1
         temp = pd_rgb_merged.iloc[j]['rgb']
+        temp_r = pd_rgb_merged.iloc[j]['r']
+        temp_g = pd_rgb_merged.iloc[j]['g']
+        temp_b = pd_rgb_merged.iloc[j]['b']
         temp_dist_score = pd_rgb_merged.iloc[j]['dist_score']
-        parse_1 = temp.find('_')
-        parse_2 = temp.find('_', parse_1+1)
-        rgb_temp = pd.DataFrame({'r':[temp[0:parse_1]], 'g':[temp[parse_1+1: parse_2]], 'b':[temp[parse_2+1:]]}).astype(int)
-        rgb_temp_std = np.std(rgb_temp, 1)[0]
-        rgb_temp_sum = rgb_temp['r'] + rgb_temp['g'] + rgb_temp['b']
+        temp_sum = pd_rgb_merged.iloc[j]['check_sum']
+        rgb_temp_std = pd_rgb_merged.iloc[j]['std']
 
-    rgb_select_2 = rgb_temp
+    rgb_select_2 = pd.DataFrame({'r':[temp_r], 'g':[temp_g], 'b':[temp_b]}).astype(int)
     print('The second selected color is:')
     print(rgb_select_2)
 
@@ -163,25 +165,35 @@ def get_artwork_colors():
     b_hist = histogram[513:768]
     b_hist_max = b_hist.index(max(b_hist))
     rgb_max = [r_hist_max, g_hist_max, b_hist_max]
-    print(rgb_max)
+#    print(rgb_max)
 
     # Generate Histogram Plot with RGB channels
-    fig, histo = pypl.subplots()
-    histo.plot(r_hist, 'r')
-    histo.plot(g_hist, 'g')
-    histo.plot(b_hist, 'b')
-    histo.plot(histogram_test, 'black')
-    pypl.show()
+#    fig, histo = pypl.subplots()
+#    histo.plot(r_hist, 'r')
+#    histo.plot(g_hist, 'g')
+#    histo.plot(b_hist, 'b')
+#    histo.plot(histogram_test, 'black')
+#    pypl.show() Uncomment to show histogram plot
 
     # Assuming sRGB encoded colour values.
     RGB = np.array([r_hist_max, g_hist_max, b_hist_max])
 
+    # RGB Values
+    rgb_for_conversion = np.vstack((rgb_select_1.values, rgb_select_2.values))
+#    rgb_select_1 = rgb_select_1.values
+#    rgb_select_2 = rgb_select_2.values
+
+#    rgb_for_conversion = [rgb_select_1, rgb_select_2]
+
+
+#    print(rgb_for_conversion)
+    
     # Conversion to tristimulus values.
-    XYZ = colour.sRGB_to_XYZ(RGB / 256)
+    XYZ = colour.sRGB_to_XYZ(rgb_for_conversion / 256)
 
     # Conversion to chromaticity coordinates.
     xy = colour.XYZ_to_xy(XYZ)
     print(xy)
     return(xy)
 
-get_artwork_colors()
+#get_artwork_colors()

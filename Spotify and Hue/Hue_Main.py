@@ -9,7 +9,7 @@ import time
 def hue_basic(hue_count):
     # Connect to the bridge with a particular username
     from qhue import Bridge
-    b = Bridge('192.168.1.131', 'DTR8tgFJztLVqbhbeXoonLTmFJIcd0w5lab3XjHS')
+    b = Bridge('192.168.0.28', '3GDMt591RrPH6lsLfe2MkE0HRAkrhzzXAP1kGSOy')
 
     
     # This should give you something familiar from the API docs:
