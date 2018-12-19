@@ -190,10 +190,11 @@ def get_artwork_colors():
     
     # Conversion to tristimulus values.
     XYZ = colour.sRGB_to_XYZ(rgb_for_conversion / 256)
+    print(XYZ)
 
     # Conversion to chromaticity coordinates.
     xy = colour.XYZ_to_xy(XYZ)
     print(xy)
     return(xy)
 
-#get_artwork_colors()
+get_artwork_colors()
