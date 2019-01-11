@@ -14,7 +14,6 @@ import colour # For conversion of RGB color scale to CIE xy chromaticity (see: h
 import matplotlib # For plotting RGB histograms
 from matplotlib import pyplot as pypl
 
-
 # Define function for obtaining colors to pass to Philips Hue API Wrapper (phue package)
 def get_artwork_colors():
     
