@@ -196,5 +196,3 @@ def get_artwork_colors():
     xy = colour.XYZ_to_xy(XYZ)
     print(xy)
     return(xy)
-
-get_artwork_colors()
