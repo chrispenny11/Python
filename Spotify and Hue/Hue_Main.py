@@ -1,4 +1,4 @@
-#Chris Penny, 2/10/17
+#Chris Penny
 #Documentation: https://developers.meethue.com/documentation/core-concepts
 #Basic Hue Lights Control
 
@@ -9,7 +9,7 @@ import time
 def hue_basic(hue_count):
     # Connect to the bridge with a particular username
     from qhue import Bridge
-    b = Bridge('192.168.0.28', '3GDMt591RrPH6lsLfe2MkE0HRAkrhzzXAP1kGSOy')
+    b = Bridge('192.168.0.24', 'COB9plogkaqukYuCoOvaO8hkI-ukMgzdL0BQp4MD')
 
     
     # This should give you something familiar from the API docs:
@@ -38,8 +38,8 @@ def hue_basic(hue_count):
 
     while switch == 0:
         for j in range(1,6):
- #           b.lights[j].state(on = True, bri=254, sat = 254, hue=hue_count)
-            b.lights[j].state(on = True, bri=254, xy = get_artwork_colors())            
+            b.lights[j].state(on = True, bri=254, sat = 254, hue=hue_count)
+#            b.lights[j].state(on = True, bri=254, xy = get_artwork_colors())            
         time.sleep(100)
 
     while switch == 1:

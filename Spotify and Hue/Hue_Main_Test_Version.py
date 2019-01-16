@@ -1,4 +1,4 @@
-#Chris Penny, 2/10/17
+#Chris Penny
 #Documentation: https://developers.meethue.com/documentation/core-concepts
 #Basic Hue Lights Control
 
@@ -12,7 +12,7 @@ def hue_basic():
     print(xy[1])
     
     from qhue import Bridge
-    bridge_obj = Bridge('192.168.0.28', '3GDMt591RrPH6lsLfe2MkE0HRAkrhzzXAP1kGSOy')
+    bridge_obj = Bridge('192.168.0.24', 'COB9plogkaqukYuCoOvaO8hkI-ukMgzdL0BQp4MD')
 
     lights = bridge_obj.lights   # Creates a new Resource with its own URL
 
